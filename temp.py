@@ -1,3 +1,5 @@
+
+# Author: Max Langer
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
