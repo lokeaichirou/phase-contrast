@@ -33,11 +33,11 @@ fname_a = './a/acqui_0.acr'
 a_0000 = np.fromfile(fname_a, dtype=np.float32, offset=182)  # Remove header of 182 bytes
 a_0000 = a_0000.reshape(2048, 2048)  # Reshape it to be a 4*4*2048 tensor (2048 because of 512*4)
 print(a_0000.shape)
-fig0 = plt.figure(0)
-plt.imshow(a_0000, cmap='gray')
-fig0.suptitle(fname_a, fontsize=16)
-plt.colorbar()
-pylab.show()
+#fig0 = plt.figure(0)
+#plt.imshow(a_0000, cmap='gray')
+#fig0.suptitle(fname_a, fontsize=16)
+#plt.colorbar()
+#pylab.show()
 
 # Fetch the data of phase shift
 fname_ph = './ph/acqui_0.acr'
@@ -75,7 +75,7 @@ distance = [0, 0.18, 0.318, 0.918]  # distance from exit plane of object to diff
 # distances for CTF method according to Dr Max's thesis?
 
 # Wave part
-wave = np.exp(-a_0000 + 1j * ph_0000)  # Refer to Formula (2.40), it is the transmittance function, because we assume
+wave = np.exp(-a_0000/2 - 2.0j * ph_0000)  # Refer to Formula (2.40), it is the transmittance function, because we assume
 # the incident wave as uniform flux ; wave at the exit plane of object = Multiplication of original incident wave
 # with transmittance function (decided by complex refractive index including attenuation coefficients and phase shift)
 wave = np.pad(wave, ((ny // 2, ny // 2), (nx // 2, nx // 2)), 'edge') # edge padding is done to extend the boundary of 2D
@@ -115,8 +115,8 @@ for x in range(len(distance)):
 # Because numpy has broadcasting, we don't have to mind the fact that wave is a 3 dimensional tensor while P is a 2
 # dimensional matrix, numpy will copy P for 4 times for the multiplication processing
 
-#Id = np.abs(Id) ** 2  # intensity of wave on diffraction plane is squared modulus of its representation
-Id = np.abs(Id)  # intensity of wave on diffraction plane is squared modulus of its representation
+Id = np.abs(Id) ** 2  # intensity of wave on diffraction plane is squared modulus of its representation
+#Id = np.abs(Id)  # intensity of wave on diffraction plane is squared modulus of its representation
 Id = Id[::, ny // 2:-ny // 2, nx // 2:-nx // 2]  # We keep only the core part after the convolution (in Fourier domain,it is
 # multiplication done above, at the same moment in spatial domain, it is convolution). This is in line with the wave
 # before the convolution with PROPAGATOR
